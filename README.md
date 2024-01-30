@@ -1,8 +1,8 @@
 # 78Merchant
 
 ## Overview
-78Merchant is a comprehensive Java-based solution for managing merchant data and transactions. 
-Designed to streamline the process of handling merchant information and their financial transactions, this project offers an efficient and user-friendly approach to merchant services.
+78Merchant is a comprehensive Java-based payment API designed to facilitate efficient and secure merchant transaction management. It provides a comprehensive suite of services for handling merchant accounts, processing payments, and managing financial transactions with ease.
+It is designed to streamline the process of handling merchant information and their financial transactions, this project offers an efficient and user-friendly approach to merchant services.
 
 ## Features
 - **Merchant Management**: Facilitate the addition, modification, and viewing of merchant details.
