@@ -1,4 +1,4 @@
-# 78Merchant
+# Merchants-API
 
 ## Overview
 Merchants-API is a comprehensive Java-based payment API designed to facilitate efficient and secure merchant transaction management. It provides a comprehensive suite of services for handling merchant accounts, processing payments, and managing financial transactions with ease.
