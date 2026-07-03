@@ -1,8 +1,8 @@
-package com.MerchantAPI.data;
+package com.portfolio.merchantapi.merchant;
 
 import lombok.Data;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity
 @Data
