@@ -1,4 +1,4 @@
-package com.MerchantAPI;
+package com.portfolio.merchantapi;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
