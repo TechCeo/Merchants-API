@@ -1,5 +1,6 @@
 package com.portfolio.merchantapi.transaction;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,7 @@ public class TransactionController {
     private final TransactionService transactionService;
 
     @PostMapping("/transactions")
-    public ResponseEntity<TransactionResponse> createTransaction(@RequestBody TransactionRequest request) {
+    public ResponseEntity<TransactionResponse> createTransaction(@Valid @RequestBody TransactionRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(transactionService.createTransaction(request));
     }
@@ -32,12 +33,10 @@ public class TransactionController {
     }
 
     @GetMapping("/merchants/{merchantId}/transactions")
-    public ResponseEntity<List<TransactionResponse>> getMerchantTransactions(
+    public List<TransactionResponse> getMerchantTransactions(
             @PathVariable Long merchantId,
             @RequestParam(required = false) String connectionMode) {
 
-        return transactionService.findTransactionsByMerchant(merchantId, connectionMode)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        return transactionService.findTransactionsByMerchant(merchantId, connectionMode);
     }
 }

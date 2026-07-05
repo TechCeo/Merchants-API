@@ -1,12 +1,12 @@
 package com.portfolio.merchantapi.transaction;
 
+import com.portfolio.merchantapi.common.exception.MerchantNotFoundException;
 import com.portfolio.merchantapi.merchant.MerchantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -27,14 +27,14 @@ public class TransactionService {
         return TransactionResponse.from(transactionRepository.save(transaction));
     }
 
-    public Optional<List<TransactionResponse>> findTransactionsByMerchant(Long merchantId, String connectionMode) {
+    public List<TransactionResponse> findTransactionsByMerchant(Long merchantId, String connectionMode) {
         if (!merchantService.existsById(merchantId)) {
-            return Optional.empty();
+            throw new MerchantNotFoundException(merchantId);
         }
 
-        return Optional.of(findMerchantTransactions(merchantId, connectionMode).stream()
+        return findMerchantTransactions(merchantId, connectionMode).stream()
                 .map(TransactionResponse::from)
-                .toList());
+                .toList();
     }
 
     public List<TransactionResponse> findTransactions(String connectionMode) {
