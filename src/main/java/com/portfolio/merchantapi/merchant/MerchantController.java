@@ -1,5 +1,6 @@
 package com.portfolio.merchantapi.merchant;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,15 +19,13 @@ public class MerchantController {
     private final MerchantService merchantService;
 
     @PostMapping
-    public ResponseEntity<MerchantResponse> createMerchant(@RequestBody MerchantRequest request) {
+    public ResponseEntity<MerchantResponse> createMerchant(@Valid @RequestBody MerchantRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(merchantService.createMerchant(request));
     }
 
     @GetMapping("/{merchantId}")
-    public ResponseEntity<MerchantResponse> getMerchant(@PathVariable Long merchantId) {
-        return merchantService.findMerchantById(merchantId)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public MerchantResponse getMerchant(@PathVariable Long merchantId) {
+        return merchantService.findMerchantById(merchantId);
     }
 }

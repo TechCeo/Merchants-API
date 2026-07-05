@@ -1,9 +1,8 @@
 package com.portfolio.merchantapi.merchant;
 
+import com.portfolio.merchantapi.common.exception.MerchantNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -19,9 +18,10 @@ public class MerchantService {
         return MerchantResponse.from(merchantRepository.save(merchant));
     }
 
-    public Optional<MerchantResponse> findMerchantById(Long id) {
+    public MerchantResponse findMerchantById(Long id) {
         return merchantRepository.findById(id)
-                .map(MerchantResponse::from);
+                .map(MerchantResponse::from)
+                .orElseThrow(() -> new MerchantNotFoundException(id));
     }
 
     public boolean existsById(Long id) {
