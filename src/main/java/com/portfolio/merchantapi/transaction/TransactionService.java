@@ -77,6 +77,10 @@ public class TransactionService {
     }
 
     private IdempotencyRecord createIdempotencyRecord(String idempotencyKey) {
+        if (idempotencyRecordRepository.existsById(idempotencyKey)) {
+            throw new DuplicateIdempotencyKeyException(idempotencyKey);
+        }
+
         IdempotencyRecord record = new IdempotencyRecord();
         record.setIdempotencyKey(idempotencyKey);
         record.setCreatedAt(LocalDateTime.now());

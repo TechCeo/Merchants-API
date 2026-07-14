@@ -11,6 +11,7 @@ Merchant API is a Spring Boot REST service for managing merchants and their paym
 - Oracle JDBC for local and production-style runtime
 - Flyway for SQL database migrations
 - H2 for test execution
+- Testcontainers with Oracle Free for integration testing
 - Springdoc OpenAPI / Swagger UI
 - Docker Compose with Oracle Free
 - Maven Wrapper
@@ -72,7 +73,10 @@ The `test` profile uses an in-memory H2 database in Oracle compatibility mode so
 ```powershell
 .\mvnw.cmd clean compile
 .\mvnw.cmd clean test
+.\mvnw.cmd clean verify
 ```
+
+`clean verify` includes a Testcontainers-backed Oracle integration test. Docker must be running locally.
 
 ## Docker Compose
 
@@ -83,6 +87,16 @@ docker compose up --build
 ```
 
 The API is exposed on `localhost:8080`, and Oracle is exposed on `localhost:1521`.
+
+## CI
+
+GitHub Actions runs on every push and pull request to `main`:
+
+```text
+.github/workflows/ci.yml
+```
+
+The workflow uses Java 21, Maven dependency caching, Docker-enabled Ubuntu runners, and `./mvnw --batch-mode clean verify`.
 
 ## Local Run
 
