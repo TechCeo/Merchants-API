@@ -3,6 +3,7 @@ package com.portfolio.merchantapi.common.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -31,6 +32,24 @@ public class GlobalExceptionHandler {
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, exception.getMessage());
         problem.setTitle("Merchant not found");
         problem.setType(URI.create("https://merchant-api/errors/merchant-not-found"));
+
+        return problem;
+    }
+
+    @ExceptionHandler(DuplicateIdempotencyKeyException.class)
+    public ProblemDetail handleDuplicateIdempotencyKey(DuplicateIdempotencyKeyException exception) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, exception.getMessage());
+        problem.setTitle("Duplicate idempotency key");
+        problem.setType(URI.create("https://merchant-api/errors/duplicate-idempotency-key"));
+
+        return problem;
+    }
+
+    @ExceptionHandler({InvalidIdempotencyKeyException.class, MissingRequestHeaderException.class})
+    public ProblemDetail handleInvalidIdempotencyKey(Exception exception) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, exception.getMessage());
+        problem.setTitle("Invalid idempotency key");
+        problem.setType(URI.create("https://merchant-api/errors/invalid-idempotency-key"));
 
         return problem;
     }
