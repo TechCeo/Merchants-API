@@ -28,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class TransactionIntegrationTest {
 
     private static final DockerImageName ORACLE_IMAGE = DockerImageName
-            .parse("gvenzl/oracle-free:slim-faststart")
+            .parse("gvenzl/oracle-xe:21-slim-faststart")
             .asCompatibleSubstituteFor("gvenzl/oracle-xe");
 
     @Container

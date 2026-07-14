@@ -34,7 +34,7 @@ jobs:
       - name: Pre-pull Oracle test image
         run: |
           for attempt in 1 2 3; do
-            docker pull gvenzl/oracle-free:slim-faststart && exit 0
+            docker pull gvenzl/oracle-xe:21-slim-faststart && exit 0
             echo "Oracle image pull failed on attempt ${attempt}; retrying..."
             sleep 20
           done
