@@ -8,7 +8,7 @@ Accepted
 
 The Merchant API began as a small Spring Boot CRUD-style service using Java 8, Spring Boot 2.x, hardcoded database credentials, Hibernate schema mutation, loosely typed responses, and RPC-style endpoints.
 
-The modernization goal is to make the project demonstrate senior backend discipline while preserving a KISS design: predictable architecture, explicit configuration, strong API contracts, production-safe persistence, and useful tests without unnecessary distributed infrastructure.
+The modernization goal is to make the service robust while preserving a KISS design: predictable architecture, explicit configuration, strong API contracts, production-safe persistence, and useful tests without unnecessary distributed infrastructure.
 
 ## Decision
 
