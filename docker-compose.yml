@@ -1,0 +1,33 @@
+services:
+  merchant-db:
+    image: gvenzl/oracle-free:23-slim
+    container_name: merchant-db
+    environment:
+      ORACLE_PASSWORD: oracle
+      APP_USER: merchant_api
+      APP_USER_PASSWORD: merchant_api
+    ports:
+      - "1521:1521"
+    volumes:
+      - merchant-db-data:/opt/oracle/oradata
+    healthcheck:
+      test: ["CMD", "healthcheck.sh"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  merchant-api:
+    build: .
+    container_name: merchant-api
+    depends_on:
+      merchant-db:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:oracle:thin:@merchant-db:1521/FREEPDB1
+      SPRING_DATASOURCE_USERNAME: merchant_api
+      SPRING_DATASOURCE_PASSWORD: merchant_api
+    ports:
+      - "8080:8080"
+
+volumes:
+  merchant-db-data:

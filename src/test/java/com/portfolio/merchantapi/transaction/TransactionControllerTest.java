@@ -1,5 +1,6 @@
 package com.portfolio.merchantapi.transaction;
 
+import com.portfolio.merchantapi.common.exception.DuplicateIdempotencyKeyException;
 import com.portfolio.merchantapi.common.exception.GlobalExceptionHandler;
 import com.portfolio.merchantapi.common.exception.MerchantNotFoundException;
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -32,7 +34,7 @@ class TransactionControllerTest {
 
     @Test
     void createTransactionReturnsCreated() throws Exception {
-        when(transactionService.createTransaction(any(TransactionRequest.class)))
+        when(transactionService.createTransaction(any(TransactionRequest.class), anyString()))
                 .thenReturn(new TransactionResponse(
                         10L,
                         BigDecimal.valueOf(25.50),
@@ -44,6 +46,7 @@ class TransactionControllerTest {
                 ));
 
         mockMvc.perform(post("/api/v1/transactions")
+                        .header("Idempotency-Key", "txn-20260713-0001")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -62,6 +65,7 @@ class TransactionControllerTest {
     @Test
     void createTransactionReturnsBadRequestForInvalidPayload() throws Exception {
         mockMvc.perform(post("/api/v1/transactions")
+                        .header("Idempotency-Key", "txn-20260713-0002")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -77,6 +81,43 @@ class TransactionControllerTest {
                 .andExpect(jsonPath("$.errors.merchantId").value("merchantId must be positive"))
                 .andExpect(jsonPath("$.errors.transactionType").value("transactionType is required"))
                 .andExpect(jsonPath("$.errors.connectionMode").value("connectionMode is required"));
+    }
+
+    @Test
+    void createTransactionReturnsBadRequestWhenIdempotencyKeyIsMissing() throws Exception {
+        mockMvc.perform(post("/api/v1/transactions")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "transactionAmount": 25.50,
+                                  "merchantId": 1,
+                                  "transactionType": "SALE",
+                                  "connectionMode": "Live"
+                                }
+                                """))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.title").value("Invalid idempotency key"));
+    }
+
+    @Test
+    void createTransactionReturnsConflictForDuplicateIdempotencyKey() throws Exception {
+        when(transactionService.createTransaction(any(TransactionRequest.class), anyString()))
+                .thenThrow(new DuplicateIdempotencyKeyException("txn-20260713-0001"));
+
+        mockMvc.perform(post("/api/v1/transactions")
+                        .header("Idempotency-Key", "txn-20260713-0001")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "transactionAmount": 25.50,
+                                  "merchantId": 1,
+                                  "transactionType": "SALE",
+                                  "connectionMode": "Live"
+                                }
+                                """))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.title").value("Duplicate idempotency key"))
+                .andExpect(jsonPath("$.detail").value("Duplicate idempotency key: txn-20260713-0001"));
     }
 
     @Test
