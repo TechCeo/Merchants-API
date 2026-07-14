@@ -76,7 +76,7 @@ The `test` profile uses an in-memory H2 database in Oracle compatibility mode so
 .\mvnw.cmd clean verify
 ```
 
-`clean verify` includes a Testcontainers-backed Oracle integration test. Docker must be running locally.
+`clean test` runs the fast unit and WebMvc slice tests. `clean verify` also runs the Failsafe integration-test phase, including a Testcontainers-backed Oracle Free integration test. Docker must be running locally.
 
 ## Docker Compose
 
@@ -96,7 +96,7 @@ GitHub Actions runs on every push and pull request to `main`:
 .github/workflows/ci.yml
 ```
 
-The workflow uses Java 21, Maven dependency caching, Docker-enabled Ubuntu runners, and `./mvnw --batch-mode clean verify`.
+The workflow uses Java 21, Maven dependency caching, Docker-enabled Ubuntu runners, a pre-pulled Oracle Free test image, and `./mvnw --batch-mode clean verify`.
 
 ## Local Run
 
